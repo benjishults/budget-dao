@@ -1,0 +1,6 @@
+jdbc:
+  driver: org.postgresql.Driver
+  schema: clean_after_test
+  user: test
+  password: test
+  host: localhost
