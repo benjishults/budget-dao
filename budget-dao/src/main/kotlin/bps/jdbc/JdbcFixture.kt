@@ -1,9 +1,7 @@
 package bps.jdbc
 
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toLocalDateTime
 import java.math.BigDecimal
 import java.sql.Connection
@@ -13,6 +11,8 @@ import java.sql.Timestamp
 import java.sql.Types
 import java.util.UUID
 import javax.sql.DataSource
+import kotlin.time.Instant
+import kotlin.time.toKotlinInstant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.toKotlinUuid

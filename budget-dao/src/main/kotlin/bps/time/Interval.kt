@@ -2,12 +2,12 @@ package bps.time
 
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toLocalDateTime
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Instant
+import kotlin.time.toKotlinInstant
 
 sealed interface Interval<T : Comparable<T>> {
     val start: T

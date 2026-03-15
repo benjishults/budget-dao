@@ -5,13 +5,14 @@ import bps.jdbc.JdbcConfig
 import bps.time.atStartOfMonth
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.atomics.AtomicReference
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import java.math.BigDecimal
+import kotlin.time.Clock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -88,7 +89,7 @@ interface BasicAccountsJdbcCliBudgetTestFixture : JdbcCliBudgetTestFixture {
                         if (now.month == Month.DECEMBER) {
                             LocalDateTime(now.year + 1, 1, 1, 0, 0, 0)
                         } else {
-                            LocalDateTime(now.year, now.month + 1, 1, 0, 0, 0)
+                            LocalDateTime(now.year, now.month.number + 1, 1, 0, 0, 0)
                         }
                     }
                     .atStartOfMonth()
