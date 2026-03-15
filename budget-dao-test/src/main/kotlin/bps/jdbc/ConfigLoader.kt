@@ -8,9 +8,13 @@ fun getConfigFromResource(fileName: String): Pair<JdbcConfig, HikariYamlConfig> 
     ConfigurationHelper(sequenceOf(fileName))
         .config
         .let { conf: Config ->
-            conf.at("jdbc").toValue() as JdbcConfig to
+            conf
+                .at("jdbc")
+                .toValue() as JdbcConfig to
                     try {
-                        conf.at("hikari").toValue()
+                        conf
+                            .at("hikari")
+                            .toValue()
                     } catch (_: Exception) {
                         HikariYamlConfig()
                     }
