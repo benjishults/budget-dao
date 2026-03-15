@@ -10,10 +10,22 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/benjishults/console")
+        credentials {
+            username = providers
+                .gradleProperty("github.actor")
+                .getOrElse(System.getenv("GITHUB_ACTOR"))
+            password = providers
+                .gradleProperty("github.token")
+                .getOrElse(System.getenv("GITHUB_TOKEN"))
+        }
+    }
 }
 
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(25)
 }
 
 tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
@@ -26,22 +38,10 @@ tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilation
 dependencies {
 
     // TODO see how many of these I can get rid of
-    implementation(projects.allShared)
-
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json.jvm)
 
     runtimeOnly(libs.postgres)
-
-    implementation(libs.commons.validator)
-
-    implementation(libs.jackson.jsr310)
-    implementation(libs.jackson.jdk8)
-    implementation(libs.jackson.yaml)
-    implementation(libs.jackson.kotlin) {
-        exclude(group = "org.jetbrains.kotlin")
-    }
-    implementation(libs.logback)
 
     api(libs.hikari) {
         exclude(group = "org.slf4j", module = "slf4j-api")

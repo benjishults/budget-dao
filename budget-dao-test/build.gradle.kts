@@ -9,6 +9,22 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/benjishults/console")
+        credentials {
+            username = providers
+                .gradleProperty("github.actor")
+                .getOrElse(System.getenv("GITHUB_ACTOR"))
+            password = providers
+                .gradleProperty("github.token")
+                .getOrElse(System.getenv("GITHUB_TOKEN"))
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(25)
 }
 
 tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
@@ -20,10 +36,9 @@ tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilation
 
 dependencies {
 
+    implementation(project(":budget-dao"))
     // TODO see how many of these I can get rid of
-    implementation(projects.allShared)
-    implementation(projects.budgetDao)
-    implementation(projects.konfiguration)
+    implementation(libs.bps.app.config)
     implementation(libs.konf)
     implementation(libs.commons.validator)
     runtimeOnly(libs.postgres)
