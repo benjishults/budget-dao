@@ -1,8 +1,8 @@
 package bps.kotlin.test
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 // TODO move this to a test module
 interface WithMockClock {

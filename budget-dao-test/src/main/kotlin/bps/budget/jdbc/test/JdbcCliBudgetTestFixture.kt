@@ -27,13 +27,14 @@ interface JdbcCliBudgetTestFixture : JdbcFixture, JdbcTestFixture {
         operator fun invoke(
             jdbcConfig: JdbcConfig,
             budgetName: String,
+            hikariYamlConfig: HikariYamlConfig = HikariYamlConfig(),
         ): JdbcCliBudgetTestFixture =
             object : JdbcCliBudgetTestFixture {
 
                 override val budgetName: String = budgetName
                 override val jdbcConfig: JdbcConfig = jdbcConfig
 
-                override val dataSource: DataSource = configureDataSource(jdbcConfig, HikariYamlConfig())
+                override val dataSource: DataSource = configureDataSource(jdbcConfig, hikariYamlConfig)
 
                 override val accountDao: AccountDao =
                     JdbcAccountDao(dataSource)

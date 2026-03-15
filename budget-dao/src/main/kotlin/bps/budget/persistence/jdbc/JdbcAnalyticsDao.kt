@@ -7,11 +7,10 @@ import bps.jdbc.JdbcFixture.Companion.transactOrThrow
 import bps.time.NaturalLocalInterval
 import bps.time.atStartOfMonth
 import bps.time.naturalMonthInterval
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import java.math.BigDecimal
@@ -22,13 +21,15 @@ import java.sql.Timestamp
 import java.util.SortedMap
 import java.util.TreeMap
 import javax.sql.DataSource
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class JdbcAnalyticsDao(
     val dataSource: DataSource,
-    override val clock: Clock = Clock.System,
+    override val clock: Clock = kotlin.time.Clock.System,
 ) : AnalyticsDao, JdbcFixture {
 
     data class Item(
@@ -187,7 +188,7 @@ class JdbcAnalyticsDao(
                                             LocalDateTime(
                                                 year = runningTransactionIntervalStart.year + 1,
                                                 month = Month.JANUARY,
-                                                dayOfMonth = 1,
+                                                day = 1,
                                                 hour = 0,
                                                 minute = 0,
                                                 second = 0,
@@ -195,8 +196,8 @@ class JdbcAnalyticsDao(
                                         }
                                         ?: LocalDateTime(
                                             year = runningTransactionIntervalStart.year,
-                                            month = runningTransactionIntervalStart.month + 1,
-                                            dayOfMonth = 1,
+                                            month = runningTransactionIntervalStart.month.number + 1,
+                                            day = 1,
                                             hour = 0,
                                             minute = 0,
                                             second = 0,
