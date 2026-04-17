@@ -2,7 +2,7 @@ package bps.budget.persistence
 
 import bps.budget.model.DraftStatus
 import bps.budget.persistence.AccountDao.AccountCommitableTransactionItem
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import java.math.BigDecimal
 import java.sql.Connection
 import kotlin.uuid.ExperimentalUuidApi

@@ -9,11 +9,11 @@ import bps.budget.persistence.UserBudgetDao
 import bps.budget.persistence.UserEntity
 import bps.jdbc.JdbcFixture
 import bps.jdbc.JdbcFixture.Companion.transactOrThrow
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
+import kotlin.time.Instant
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.util.TimeZone
 import javax.sql.DataSource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -48,8 +48,8 @@ class JdbcUserBudgetDao(
                                                 budgetId = resultSet.getUuid("budget_id")!!,
                                                 budgetName = budgetName,
                                                 timeZone = resultSet.getString("time_zone")
-                                                    ?.let { timeZone -> TimeZone.of(timeZone) }
-                                                    ?: TimeZone.currentSystemDefault(),
+                                                    ?.let { timeZone -> TimeZone.getTimeZone(timeZone) }
+                                                    ?: TimeZone.getDefault(),
                                                 analyticsStart = resultSet.getInstant("analytics_start"),
                                                 coarseAccess = resultSet.getString("coarse_access")
                                                     ?.let(CoarseAccess::valueOf),

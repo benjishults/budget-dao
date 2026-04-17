@@ -2,7 +2,7 @@ package bps.budget.persistence
 
 import bps.budget.model.User
 import bps.budget.model.defaultGeneralAccountName
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

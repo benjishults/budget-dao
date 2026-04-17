@@ -24,29 +24,27 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(25)
-}
-
-tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
+    jvmToolchain(23)
     compilerOptions {
-//        freeCompilerArgs.add("-Xcontext-receivers")
+        optIn.add("kotlin.time.ExperimentalTime")
         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3)
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3)
     }
 }
 
 dependencies {
 
-    implementation(project(":budget-dao"))
+    api(project(":budget-dao"))
     // TODO see how many of these I can get rid of
-    implementation(libs.bps.app.config)
-    implementation(libs.konf)
-    implementation(libs.commons.validator)
-    runtimeOnly(libs.postgres)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.jackson.jsr310)
-    implementation(libs.jackson.jdk8)
-    implementation(libs.jackson.yaml)
-    implementation(libs.jackson.kotlin) {
+    api(libs.bps.app.config)
+    api(libs.konf)
+    api(libs.commons.validator)
+    api(libs.postgres)
+//    api(libs.kotlinx.datetime)
+    api(libs.jackson.jsr310)
+    api(libs.jackson.jdk8)
+    api(libs.jackson.yaml)
+    api(libs.jackson.kotlin) {
         exclude(group = "org.jetbrains.kotlin")
     }
 

@@ -4,7 +4,7 @@ package bps.budget.persistence
 
 import bps.budget.model.AccountData
 import bps.budget.model.AccountType
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import java.math.BigDecimal
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
