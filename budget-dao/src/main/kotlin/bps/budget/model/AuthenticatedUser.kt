@@ -2,8 +2,8 @@
 
 package bps.budget.model
 
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
+import java.util.TimeZone
+import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

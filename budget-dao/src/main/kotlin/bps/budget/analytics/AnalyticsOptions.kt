@@ -1,6 +1,6 @@
 package bps.budget.analytics
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 interface AnalyticsOptions {
 

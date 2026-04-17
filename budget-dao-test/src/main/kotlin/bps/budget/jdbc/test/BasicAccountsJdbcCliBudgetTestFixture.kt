@@ -5,14 +5,14 @@ import bps.jdbc.JdbcConfig
 import bps.time.atStartOfMonth
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.atomics.AtomicReference
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.Month
+import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
+import java.util.TimeZone
 import kotlin.time.Clock
+import kotlin.time.toKotlinInstant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -70,7 +70,7 @@ interface BasicAccountsJdbcCliBudgetTestFixture : JdbcCliBudgetTestFixture {
     private fun initializeWithBasicAccounts(
         budgetName: String,
         userName: String,
-        timeZone: TimeZone = TimeZone.Companion.UTC,
+        timeZone: TimeZone = TimeZone.getTimeZone(UTC),
         clock: Clock,
     ): Uuid {
         val userId = userBudgetDao.createUser(userName, "a").userId
@@ -87,13 +87,14 @@ interface BasicAccountsJdbcCliBudgetTestFixture : JdbcCliBudgetTestFixture {
                     .toLocalDateTime(timeZone)
                     .let { now ->
                         if (now.month == Month.DECEMBER) {
-                            LocalDateTime(now.year + 1, 1, 1, 0, 0, 0)
+                            LocalDateTime.of(now.year + 1, 1, 1, 0, 0, 0)
                         } else {
-                            LocalDateTime(now.year, now.month.number + 1, 1, 0, 0, 0)
+                            LocalDateTime.of(now.year, now.monthValue + 1, 1, 0, 0, 0)
                         }
                     }
                     .atStartOfMonth()
-                    .toInstant(timeZone),
+                    .toInstant(ZoneOffset.of(timeZone.id))
+                    .toKotlinInstant(),
             userId = userId,
             budgetId = budgetId,
         )
@@ -154,7 +155,7 @@ interface BasicAccountsJdbcCliBudgetTestFixture : JdbcCliBudgetTestFixture {
         @JvmStatic
         fun persistWithBasicAccounts(
             budgetName: String,
-            timeZone: TimeZone = TimeZone.Companion.currentSystemDefault(),
+            timeZone: TimeZone = TimeZone.getDefault(),
             checkingBalance: BigDecimal = BigDecimal.ZERO.setScale(2),
             walletBalance: BigDecimal = BigDecimal.ZERO.setScale(2),
             generalAccountId: Uuid = Uuid.random(),

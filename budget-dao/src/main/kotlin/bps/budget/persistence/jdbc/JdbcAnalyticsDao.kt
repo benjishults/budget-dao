@@ -7,29 +7,28 @@ import bps.jdbc.JdbcFixture.Companion.transactOrThrow
 import bps.time.NaturalLocalInterval
 import bps.time.atStartOfMonth
 import bps.time.naturalMonthInterval
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.Instant
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.Month
+import java.time.ZoneId
 import java.util.SortedMap
+import java.util.TimeZone
 import java.util.TreeMap
 import javax.sql.DataSource
-import kotlin.time.Clock
-import kotlin.time.Instant
+import kotlin.time.toKotlinInstant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class JdbcAnalyticsDao(
     val dataSource: DataSource,
-    override val clock: Clock = kotlin.time.Clock.System,
+    override val clock: Clock = Clock.System,
 ) : AnalyticsDao, JdbcFixture {
 
     data class Item(
@@ -185,22 +184,22 @@ class JdbcAnalyticsDao(
                                         .month
                                         .takeIf { it == Month.DECEMBER }
                                         ?.let {
-                                            LocalDateTime(
-                                                year = runningTransactionIntervalStart.year + 1,
-                                                month = Month.JANUARY,
-                                                day = 1,
-                                                hour = 0,
-                                                minute = 0,
-                                                second = 0,
+                                            LocalDateTime.of(
+                                                runningTransactionIntervalStart.year + 1,
+                                                Month.JANUARY,
+                                                1,
+                                                0,
+                                                0,
+                                                0,
                                             )
                                         }
-                                        ?: LocalDateTime(
-                                            year = runningTransactionIntervalStart.year,
-                                            month = runningTransactionIntervalStart.month.number + 1,
-                                            day = 1,
-                                            hour = 0,
-                                            minute = 0,
-                                            second = 0,
+                                        ?: LocalDateTime.of(
+                                            runningTransactionIntervalStart.year,
+                                            runningTransactionIntervalStart.month + 1,
+                                            1,
+                                            0,
+                                            0,
+                                            0,
                                         )
                             }
                     }
@@ -463,13 +462,15 @@ class JdbcAnalyticsDao(
                     .atStartOfMonth(timeZone)
                     .let {
                         if (it.month === Month.JANUARY)
-                            LocalDateTime(it.year - 1, 12, 1, 0, 0)
+                            LocalDateTime.of(it.year - 1, 12, 1, 0, 0)
                         else
-                            LocalDateTime(it.year, it.monthNumber - 1, 1, 0, 0)
+                            LocalDateTime.of(it.year, it.monthValue - 1, 1, 0, 0)
                     }
                     // NOTE safe because it is midnight and offsets generally occur at or after
                     //      1 a.m. local time
-                    .toInstant(timeZone),
+                    .atZone(ZoneId.of(timeZone.id))
+                    .toInstant()
+                    .toKotlinInstant(),
             )
             atIndex + 1
         } else if (options.excludeCurrentUnit) {
@@ -479,7 +480,9 @@ class JdbcAnalyticsDao(
                     .atStartOfMonth(timeZone)
                     // NOTE safe because it is midnight and offsets generally occur at or after
                     //      1 a.m. local time
-                    .toInstant(timeZone),
+                    .atZone(ZoneId.of(timeZone.id))
+                    .toInstant()
+                    .toKotlinInstant(),
             )
             atIndex + 1
         } else if (options.excludeFutureTransactions) {

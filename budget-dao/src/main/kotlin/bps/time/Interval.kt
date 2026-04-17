@@ -1,17 +1,17 @@
 package bps.time
 
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.time.DayOfWeek
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.TimeZone
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 import kotlin.time.toKotlinInstant
 
 sealed interface Interval<T : Comparable<T>> {
     val start: T
-    val unit: DateTimeUnit
+//    val unit: DateTimeUnit
 }
 
 sealed interface LocalInterval : Interval<LocalDateTime>
@@ -32,7 +32,7 @@ sealed interface NaturalLocalInterval : LocalInterval, NaturalInterval<LocalDate
 data class NaturalMonthLocalInterval(
     override val start: LocalDateTime,
 ) : PeriodInterval<LocalDateTime>, NaturalLocalInterval {
-    override val unit: DateTimeUnit.MonthBased = DateTimeUnit.MonthBased(1)
+//    override val unit: DateTimeUnit.MonthBased = DateTimeUnit.MonthBased(1)
 
     init {
         require(
@@ -41,7 +41,7 @@ data class NaturalMonthLocalInterval(
                     start.hour == 0 &&
                     start.minute == 0 &&
                     start.second == 0 &&
-                    start.nanosecond == 0,
+                    start.nano == 0,
         )
     }
 }
@@ -49,45 +49,45 @@ data class NaturalMonthLocalInterval(
 private val monthYearToNaturalMonthInterval: ConcurrentHashMap<Pair<Int, Int>, NaturalMonthLocalInterval> =
     ConcurrentHashMap()
 
-data class NaturalWeekLocalInterval(
-    override val start: LocalDateTime,
-) : PeriodInterval<LocalDateTime>, NaturalLocalInterval {
-    override val unit: DateTimeUnit.DayBased = DateTimeUnit.DayBased(7)
-
-    init {
-        require(
-//            unit.days % 7 == 0 &&
-            start.dayOfWeek == DayOfWeek.SUNDAY &&
-                    start.hour == 0 &&
-                    start.minute == 0 &&
-                    start.second == 0 &&
-                    start.nanosecond == 0,
-        )
-    }
-}
+//data class NaturalWeekLocalInterval(
+//    override val start: LocalDateTime,
+//) : PeriodInterval<LocalDateTime>, NaturalLocalInterval {
+//    override val unit: DateTimeUnit.DayBased = DateTimeUnit.DayBased(7)
+//
+//    init {
+//        require(
+////            unit.days % 7 == 0 &&
+//            start.dayOfWeek == DayOfWeek.SUNDAY &&
+//                    start.hour == 0 &&
+//                    start.minute == 0 &&
+//                    start.second == 0 &&
+//                    start.nano == 0,
+//        )
+//    }
+//}
 
 /**
  * @return the [LocalDateTime] at the start of the receiver's month.
  */
 fun LocalDateTime.atStartOfMonth(): LocalDateTime =
-    LocalDateTime(year, month, 1, 0, 0, 0)
+    LocalDateTime.of(year, month, 1, 0, 0, 0)
 
 /**
  * @return the [LocalDateTime] at the start of the receiver's month in the given [TimeZone].
  */
 fun Instant.atStartOfMonth(timeZone: TimeZone): LocalDateTime =
-    toLocalDateTime(timeZone)
-        .atStartOfMonth()
+    toJavaInstant()
+        .atStartOfMonth(timeZone)
 
 /**
  * @return the [LocalDateTime] at the start of the receiver's month in the given [TimeZone].
  */
 fun java.time.Instant.atStartOfMonth(timeZone: TimeZone): LocalDateTime =
-    toKotlinInstant()
-        .toLocalDateTime(timeZone)
+    atZone(ZoneId.of(timeZone.id))
+        .toLocalDateTime()
         .atStartOfMonth()
 
 fun LocalDateTime.naturalMonthInterval(): NaturalMonthLocalInterval =
-    monthYearToNaturalMonthInterval.computeIfAbsent(year to monthNumber) {
-        NaturalMonthLocalInterval(LocalDateTime(year, monthNumber, 1, 0, 0, 0, 0))
+    monthYearToNaturalMonthInterval.computeIfAbsent(year to monthValue) {
+        NaturalMonthLocalInterval(LocalDateTime.of(year, monthValue, 1, 0, 0, 0, 0))
     }

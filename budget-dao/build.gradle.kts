@@ -25,20 +25,18 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(25)
-}
-
-tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
+    jvmToolchain(23)
     compilerOptions {
-//        freeCompilerArgs.add("-Xcontext-receivers")
+        optIn.add("kotlin.time.ExperimentalTime")
         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3)
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3)
     }
 }
 
 dependencies {
 
     // TODO see how many of these I can get rid of
-    implementation(libs.kotlinx.datetime)
+//    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json.jvm)
 
     runtimeOnly(libs.postgres)

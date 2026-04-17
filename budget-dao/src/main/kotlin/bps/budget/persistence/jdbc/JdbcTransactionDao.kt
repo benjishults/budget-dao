@@ -15,7 +15,7 @@ import bps.budget.persistence.TransactionItemEntity
 import bps.budget.persistence.allocateItemsByAccountType
 import bps.jdbc.JdbcFixture
 import bps.jdbc.JdbcFixture.Companion.transactOrThrow
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import java.math.BigDecimal
 import java.sql.Connection
 import java.sql.PreparedStatement
